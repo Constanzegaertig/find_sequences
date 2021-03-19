@@ -70,7 +70,7 @@ def getSequence(filename, id):
         if seq_id == args['id']:
 
             #drucke Inhalt der Id
-            return(seq_id + sequences[seq_id])
+            return {seq_id: sequences[seq_id]}
 
         else :
             
@@ -85,11 +85,11 @@ def getSequence(filename, id):
                 #update flag 
                 #found = True
                 
-                    #drucke Inhalt der Id #Hier moechte ich sagen, dass der key value ausgegeben werden soll wo id gematched hat
-                    return(seq_id + sequences[seq_id])
+                    #drucke Inhalt der Id 
+                    return {seq_id: sequences[seq_id]}
                        
                 else:
-                    print('Sry your Id doesent match partially to any ID in this file')
+                    print('Sry your Id does not match partially to any ID in this file')
 
 
 if __name__ == '__main__':
