@@ -1,0 +1,169 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import argparse
+import re
+
+def get_sequences_length(filename):    
+    
+    
+    sequence_file = open(filename, 'r')
+    
+    sequences= {}
+    
+    # gehe durch jede Zeile durch 
+    for line in sequence_file: 
+        
+        # finde > 
+        if re.search(re.compile(r'^>'), line):
+            
+            # separiere Id aus ganzer Zeile
+            seq_id = re.search(re.compile(r'(?<=^>)\S+'), line).group()
+              
+            # schreibe Id in dictionary mit laenge 0
+            sequences[seq_id] = 0
+            
+        # gehe zu neuer Zeile 
+        else: 
+        
+            # laenge von Zeile # summiere laenge zu dictionary # wdh bis zum naechsten >
+            sequences[seq_id] = sequences[seq_id] + len(line)
+            
+    # gebe Werte zurueck
+    return(sequences)
+    
+   
+
+def getSequence(filename, id):
+ 
+    sequence_file = open(filename, 'r')
+    
+    sequences= {}   
+    
+    #gehe durch jede Zeile
+    for line in sequence_file: 
+    
+        #finde > 
+        if re.search(re.compile(r'^>'), line):
+    
+            #separiere Id aus ganzer Zeile
+            seq_id = re.search(re.compile(r'(?<=^>)\S+'), line).group()
+        
+            #schreibe Id in dictionary mit leerer AS 
+            sequences[seq_id] = ''
+        
+        #gehe in neue Zeile
+        else: 
+
+            #drucke Zeile an Stelle Id von dictionary
+            sequences[seq_id] = sequences[seq_id] + str(line)
+
+    #Fall lazy mode: Eingabe mit Sternechen und Ausgabe ohne Sternchen
+    
+    #setze flag 
+    #found = False
+    #gehe durch ids von dictionary
+    for seq_id in sequences: 
+        
+        #Vergleiche separierte Id mit eingegebener Id
+        if seq_id == args['id']:
+
+            #drucke Inhalt der Id
+            return(seq_id + sequences[seq_id])
+
+        else :
+            
+            if '*' in id:
+                
+                #separiere id von sternchen 
+                id = re.escape(id.strip('*'))
+                
+                #vergleiche eingegebene id mit id_seq in dictionary , wenn id in id_seq vorhanden ist 
+                if id in sequences: 
+                
+                #update flag 
+                #found = True
+                
+                    #drucke Inhalt der Id #Hier moechte ich sagen, dass der key value ausgegeben werden soll wo id gematched hat
+                    return(seq_id + sequences[seq_id])
+                       
+                else:
+                    print('Sry your Id doesent match partially to any ID in this file')
+
+
+if __name__ == '__main__':
+    
+    print(os.getcwd())
+
+    
+    command_options = ['Length', 'getSequence', 'grepSeq']
+    id_pattern = r'\S+'
+    
+
+    parser = argparse.ArgumentParser(description = """
+    Fasta.
+    """)
+    parser.add_argument('-f', '--fastafile',
+        help = f'path to input file in fasta format.',
+        type = str)
+    parser.add_argument('-d','--id',
+        help = '''Sequence identifier.''',
+        type = str)
+    parser.add_argument('-c', '--command',
+        help = f'Command to investigate file . One of {command_options}.',
+        required = True)
+
+    args = vars(parser.parse_args())
+
+    # checks if fastafile exists
+    if os.path.isfile(args['fastafile']):
+       print(f'File {args["fastafile"]} found.')
+    else:
+        print(f'File {args["fastafile"]} not found.')
+        sys.exit(1)       
+ 
+    # checks command and ID
+    if args['command']:
+        if args['command'] not in command_options:
+            print(f'The command {args["command"]} is not a valid Command.')
+            sys.exit(1)
+
+    if args['command'] in ['getSequence']:
+        if not args['id']:
+            print(f'Id needs to be provided for command getSequence. Please open again with valid ID')
+            sys.exit(1)
+
+        if not re.match(id_pattern, args['id']):
+            print(f'The ID: {args["id"]} is not valid. Please enter a valid ID')
+            sys.exit(1)
+
+        result = getSequence(filename = args['fastafile'], id = args["id"])
+
+    elif args['command'] in ['grepSeq']:
+        if not args['id']:
+            print(f'Id needs to be provided for command grepSeq. Please open again with valid ID')
+            sys.exit(1)
+
+        if not re.match(alt_id_pat, args['id']):
+            print(f' {args["id"]} is not a valid ID.')
+            sys.exit(1)
+
+        result = grepSeq(filename = args['fastafile'], pattern = args['id'])
+
+    elif args['command'] == 'Length':
+        if args['id']:
+            print('ID not necessary for command "Length".')
+
+        result = get_sequences_length(args['fastafile'])  #geb den wert von dictionary sequences  #result ist neues dictionary
+
+    
+    print("{:<30} {:<15}".format('Sequence Id','Value'))
+    
+    # fuer jede row formatiere tabulator 
+    #for seq_id in result: 
+        
+        # gebe Tabelle aus 
+        #print ("{:<30} {:<15}".format(seq_id, result[seq_id]))
+    
+    #print(result)
