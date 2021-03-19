@@ -158,12 +158,12 @@ if __name__ == '__main__':
         result = get_sequences_length(args['fastafile'])  #geb den wert von dictionary sequences  #result ist neues dictionary
 
     
-    #print("{:<30} {:<15}".format('Sequence Id','Value'))
+    print("{:<30} {:<15}".format('Sequence Id','Value'))
     
     # fuer jede row formatiere tabulator 
-    #for seq_id in result: 
+    for seq_id in result: 
         
         # gebe Tabelle aus 
-        #print ("{:<30} {:<15}".format(seq_id, result[seq_id]))
+        print ("{:<30} {:<15}".format(seq_id, result[seq_id]))
     
-    print(result)
+  
