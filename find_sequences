@@ -166,4 +166,4 @@ if __name__ == '__main__':
         # gebe Tabelle aus 
         #print ("{:<30} {:<15}".format(seq_id, result[seq_id]))
     
-    #print(result)
+    print(result)
